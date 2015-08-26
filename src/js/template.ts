@@ -265,7 +265,7 @@ class Template {
             selectedHour: selectedDateTime.hour,
             selectedMinute: selectedDateTime.minute,
             selectedSecond: selectedDateTime.second,
-            selectedAmPm: selectedDateTime.ampm,
+            selectedAmPm: selectedDateTime.ampm.toUpperCase(),
             use12Hours: use12Hours,
             useSeconds: useSeconds,
             reginal: regional
