@@ -69,7 +69,14 @@ var methods = {
                 "isShown": false
             });
         });
+    },
+
+    getDate: function() {
+        var $input = this.eq(0);
+        var storage = $input.data("datetimepicker");
+        return storage.state.get("selectedDateTime");
     }
+
 }
 
 $.fn.datetimepicker = function (options) {
