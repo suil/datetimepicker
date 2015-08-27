@@ -1,0 +1,29 @@
+{
+  "name": "datetimepicker",
+  "version": "0.0.0",
+  "homepage": "https://github.com/suil/datetimepicker",
+  "authors": [
+    "Shuang Liu <shuangliu@msn.com>"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8"
+  },
+  "description": "Date and time picker with no dependencies",
+  "main": [
+    "datetimepicker.css",
+    "datetimepicker.plugin.js"
+  ],
+  "keywords": [
+    "datetimepicker",
+    "datepicker",
+    "jquery",
+    "plugin"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

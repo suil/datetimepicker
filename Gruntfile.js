@@ -13,14 +13,14 @@ module.exports = function(grunt) {
         },
         
         concat: {
-            options: {
-                banner: ";(function($) { \n'use strict';\n;",
-                footer: "\n}(jQuery));",
-                separator: ""
-            },
-            dist: {
+            jQueryWrapping: {
                 src: ['dist/datetimepicker.ts.js'],
                 dest: 'dist/datetimepicker.plugin.js',
+                options: {
+                    banner: ";(function($) { \n'use strict';\n;",
+                    footer: "\n}(jQuery));",
+                    separator: ""
+                }
             }
         },
         
@@ -76,6 +76,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-clean");
 
-    grunt.registerTask("default", ["ts", "concat", "jsbeautifier", "less:development", "clean"]);
+    grunt.registerTask("default", ["ts", "concat:jQueryWrapping", "jsbeautifier", "less:development", "clean"]);
 
 }
