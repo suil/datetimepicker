@@ -10,8 +10,8 @@
   },
   "description": "Date and time picker with no dependencies",
   "main": [
-    "datetimepicker.css",
-    "datetimepicker.plugin.js"
+    "dist/datetimepicker.css",
+    "dist/datetimepicker.plugin.js"
   ],
   "keywords": [
     "datetimepicker",
