@@ -4,18 +4,19 @@ module.exports = function(grunt) {
     grunt.initConfig({
         ts: {
             default: {
-                src: ["src/js/*.ts"],
-                out: "dist/datetimepicker.ts.js",
+                files: {
+                    "dist/datetimepicker.ts.js": ["src/js/datetime.ts", "src/js/state.ts", "src/js/template.ts", "src/js/uiBindings.ts", "src/js/eventBindings.ts", ]
+                },
                 options: {
                     sourceMap: false,
                     noResolve: true,
                     newLine: "LF",
                     fast: "never",
                     target: "es5"
-                },
+                }
             }
         },
-        
+
         concat: {
             "jquery-wrapping": {
                 src: ['dist/datetimepicker.ts.js'],
@@ -27,7 +28,7 @@ module.exports = function(grunt) {
                 }
             }
         },
-        
+
         // uglify: {
         //     datetimepicker: {
         //         options: {
