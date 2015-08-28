@@ -718,6 +718,7 @@
                 date: date
             });
             state.set("selectedDateTime", selectedDateTime);
+            $("body").trigger("mousedown");
         });
         storage.$calendar.on("click.datetimepicker", "table.months tbody td span", function() {
             var selectedMonth = storage.$calendar.find("table.months tbody td span").index(this) + 1;
@@ -803,8 +804,14 @@
             state.set("timepickerView", TimepickerView.Dash);
         });
         $input.on("keypress.datetimepicker", function(ev) {
-            ev.preventDefault();
-        });
+                ev.preventDefault();
+            })
+            .on("keydown.datetimepicker", function(ev) {
+                ev.preventDefault();
+            })
+            .on("keyup.datetimepicker", function(ev) {
+                ev.preventDefault();
+            });
     }
     /// <reference path="datetime.ts" />
     /// <reference path="template.ts" />
