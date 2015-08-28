@@ -7,13 +7,17 @@ module.exports = function(grunt) {
                 src: ["src/js/*.ts"],
                 out: "dist/datetimepicker.ts.js",
                 options: {
-                    sourceMap: false
+                    sourceMap: false,
+                    noResolve: true,
+                    newLine: "LF",
+                    fast: "never",
+                    target: "es5"
                 },
             }
         },
         
         concat: {
-            jQueryWrapping: {
+            "jquery-wrapping": {
                 src: ['dist/datetimepicker.ts.js'],
                 dest: 'dist/datetimepicker.plugin.js',
                 options: {
@@ -66,7 +70,7 @@ module.exports = function(grunt) {
             }
         },
         
-        clean: ["dist/datetimepicker.ts.js"]
+        clean: ["dist/datetimepicker.ts.js", ".tscache"]
     });
 
     grunt.loadNpmTasks("grunt-ts");
@@ -76,6 +80,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-clean");
 
-    grunt.registerTask("default", ["ts", "concat:jQueryWrapping", "jsbeautifier", "less:development", "clean"]);
+    grunt.registerTask("default", ["ts", "concat:jquery-wrapping", "jsbeautifier", "less:development", "clean"]);
 
 }

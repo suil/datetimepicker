@@ -156,5 +156,8 @@ function bindUi($input) {
         }
         $input.val(formattedDate);
 
+        if ($.isFunction(storage.options.onChange)) {
+            storage.options.onChange.call($input.get(0), state.get("selectedDateTime").dateObject);
+        }
     });
 }

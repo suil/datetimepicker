@@ -83,8 +83,6 @@ $.fn.datetimepicker = function (options) {
     var setting = {
         use12Hours: true,
         useSeconds: false,
-        beforeFormatDateTime: undefined,
-        beforeParseDateTime: undefined,
         regional: {
             monthNames: [
                 "January", "February", "March", "April", "May", "June",
@@ -97,7 +95,10 @@ $.fn.datetimepicker = function (options) {
             dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
             dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             dayNamesMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-        }
+        },
+        beforeFormatDateTime: undefined,
+        beforeParseDateTime: undefined,
+        onChange: undefined
     };
     
     if (methods[options]) {

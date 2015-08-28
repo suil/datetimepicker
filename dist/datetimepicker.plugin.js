@@ -174,83 +174,6 @@
         };
         return DateTime;
     })();
-    var TimepickerView;
-    (function(TimepickerView) {
-        TimepickerView[TimepickerView["Dash"] = 0] = "Dash";
-        TimepickerView[TimepickerView["Hours"] = 1] = "Hours";
-        TimepickerView[TimepickerView["Minutes"] = 2] = "Minutes";
-        TimepickerView[TimepickerView["Seconds"] = 3] = "Seconds";
-    })(TimepickerView || (TimepickerView = {}));;
-    var DatepickerView;
-    (function(DatepickerView) {
-        DatepickerView[DatepickerView["Days"] = 0] = "Days";
-        DatepickerView[DatepickerView["Months"] = 1] = "Months";
-        DatepickerView[DatepickerView["Years"] = 2] = "Years";
-    })(DatepickerView || (DatepickerView = {}));;
-    var PickerView;
-    (function(PickerView) {
-        PickerView[PickerView["TimePicker"] = 0] = "TimePicker";
-        PickerView[PickerView["DatePicker"] = 1] = "DatePicker";
-    })(PickerView || (PickerView = {}));;
-    var State = (function() {
-        function State(defaults) {
-            for (var propertyName in defaults) {
-                this[propertyName] = defaults[propertyName];
-            }
-            this.observers = {};
-        }
-        State.prototype.get = function(propertyName) {
-            return this[propertyName];
-        };
-        State.prototype.set = function(propertyName, value) {
-            var oldValue = this[propertyName];
-            if (!this.isValueChanged(value, oldValue)) {
-                return this;
-            }
-            this[propertyName] = value;
-            this.notify(propertyName, value, oldValue);
-            return this;
-        };
-        State.prototype.sets = function(values) {
-            var _this = this;
-            var changes = [];
-            for (var propertyName in values) {
-                var oldValue = this[propertyName];
-                if (!this.isValueChanged(values[propertyName], oldValue)) {
-                    continue;
-                }
-                this[propertyName] = values[propertyName];
-                changes.push({
-                    propertyName: propertyName,
-                    oldValue: oldValue,
-                    newValue: values[propertyName]
-                });
-            }
-            changes.forEach(function(change) {
-                _this.notify(change.propertyName, change.newValue, change.oldValue);
-            });
-            return this;
-        };
-        State.prototype.notify = function(propertyName, newValue, oldValue) {
-            var callback = this.observers[propertyName];
-            if (callback) {
-                callback.call(this, newValue, oldValue);
-            }
-        };
-        State.prototype.isValueChanged = function(newValue, oldValue) {
-            if (typeof newValue === "object") {
-                newValue = JSON.stringify(newValue);
-            }
-            if (typeof oldValue === "object") {
-                oldValue = JSON.stringify(oldValue);
-            }
-            return newValue != oldValue;
-        };
-        State.prototype.onChange = function(propertyName, callback) {
-            this.observers[propertyName] = callback;
-        };
-        return State;
-    })();
     /// <reference path="state.ts" />
     /// <reference path="datetime.ts" />
     function bindEvents($input) {
@@ -424,6 +347,174 @@
             ev.preventDefault();
         });
     }
+    /// <reference path="datetime.ts" />
+    /// <reference path="template.ts" />
+    /// <reference path="uiBindings.ts" />
+    /// <reference path="eventBindings.ts" />
+    var methods = {
+        init: function(options) {
+            return this.each(function() {
+                var $input = $(this),
+                    initDateTime, storage = {
+                        options: options,
+                        $input: $input,
+                        $calendar: undefined,
+                        state: new State()
+                    };
+                var initialDate;
+                if ($.isFunction(options.beforeParseDateTime)) {
+                    initialDate = options.beforeParseDateTime.call($input.get(0), $input.val());
+                } else {
+                    initialDate = Date.parse($input.val());
+                }
+                if (initialDate instanceof Date) {
+                    initDateTime = new DateTime({
+                        year: initialDate.getFullYear(),
+                        month: initialDate.getMonth(),
+                        date: initialDate.getDate(),
+                        hour: initialDate.getHours(),
+                        minute: initialDate.getMinutes(),
+                        second: initialDate.getSeconds()
+                    });
+                } else {
+                    initDateTime = new DateTime();
+                }
+                options.useSecond || initDateTime.set("second", 0);
+                $input.data("datetimepicker", storage);
+                var calendarHtml = Template.renderCalendarDropdownHtml({
+                    year: initDateTime.year,
+                    month: initDateTime.month
+                }, initDateTime.year, initDateTime.decade, initDateTime, options.use12Hours, options.useSeconds, options.regional);
+                storage.$calendar = $(calendarHtml);
+                storage.$calendar.appendTo("body");
+                bindUi($input);
+                bindEvents($input);
+                storage.state.sets({
+                    "pickerView": PickerView.DatePicker,
+                    "timepickerView": TimepickerView.Dash,
+                    "datepickerView": DatepickerView.Days,
+                    "monthOfDaysView": {
+                        year: initDateTime.year,
+                        month: initDateTime.month
+                    },
+                    "yearOfMonthsView": initDateTime.year,
+                    "decadeOfYearsView": initDateTime.decade,
+                    "selectedDateTime": undefined,
+                    "isShown": false
+                });
+            });
+        },
+        getDate: function() {
+            var $input = this.eq(0);
+            var storage = $input.data("datetimepicker");
+            return storage.state.get("selectedDateTime");
+        }
+    };
+    $.fn.datetimepicker = function(options) {
+        var setting = {
+            use12Hours: true,
+            useSeconds: false,
+            regional: {
+                monthNames: [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ],
+                monthNamesShort: [
+                    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+                    "Sep", "Oct", "Nov", "Dec"
+                ],
+                dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                dayNamesMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+            },
+            beforeFormatDateTime: undefined,
+            beforeParseDateTime: undefined,
+            onChange: undefined
+        };
+        if (methods[options]) {
+            return methods[options].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof options === 'object' || !options) {
+            $.extend(setting, options);
+            return methods.init.call(this, setting);
+        }
+    };
+    var TimepickerView;
+    (function(TimepickerView) {
+        TimepickerView[TimepickerView["Dash"] = 0] = "Dash";
+        TimepickerView[TimepickerView["Hours"] = 1] = "Hours";
+        TimepickerView[TimepickerView["Minutes"] = 2] = "Minutes";
+        TimepickerView[TimepickerView["Seconds"] = 3] = "Seconds";
+    })(TimepickerView || (TimepickerView = {}));;
+    var DatepickerView;
+    (function(DatepickerView) {
+        DatepickerView[DatepickerView["Days"] = 0] = "Days";
+        DatepickerView[DatepickerView["Months"] = 1] = "Months";
+        DatepickerView[DatepickerView["Years"] = 2] = "Years";
+    })(DatepickerView || (DatepickerView = {}));;
+    var PickerView;
+    (function(PickerView) {
+        PickerView[PickerView["TimePicker"] = 0] = "TimePicker";
+        PickerView[PickerView["DatePicker"] = 1] = "DatePicker";
+    })(PickerView || (PickerView = {}));;
+    var State = (function() {
+        function State(defaults) {
+            for (var propertyName in defaults) {
+                this[propertyName] = defaults[propertyName];
+            }
+            this.observers = {};
+        }
+        State.prototype.get = function(propertyName) {
+            return this[propertyName];
+        };
+        State.prototype.set = function(propertyName, value) {
+            var oldValue = this[propertyName];
+            if (!this.isValueChanged(value, oldValue)) {
+                return this;
+            }
+            this[propertyName] = value;
+            this.notify(propertyName, value, oldValue);
+            return this;
+        };
+        State.prototype.sets = function(values) {
+            var _this = this;
+            var changes = [];
+            for (var propertyName in values) {
+                var oldValue = this[propertyName];
+                if (!this.isValueChanged(values[propertyName], oldValue)) {
+                    continue;
+                }
+                this[propertyName] = values[propertyName];
+                changes.push({
+                    propertyName: propertyName,
+                    oldValue: oldValue,
+                    newValue: values[propertyName]
+                });
+            }
+            changes.forEach(function(change) {
+                _this.notify(change.propertyName, change.newValue, change.oldValue);
+            });
+            return this;
+        };
+        State.prototype.notify = function(propertyName, newValue, oldValue) {
+            var callback = this.observers[propertyName];
+            if (callback) {
+                callback.call(this, newValue, oldValue);
+            }
+        };
+        State.prototype.isValueChanged = function(newValue, oldValue) {
+            if (typeof newValue === "object") {
+                newValue = JSON.stringify(newValue);
+            }
+            if (typeof oldValue === "object") {
+                oldValue = JSON.stringify(oldValue);
+            }
+            return newValue != oldValue;
+        };
+        State.prototype.onChange = function(propertyName, callback) {
+            this.observers[propertyName] = callback;
+        };
+        return State;
+    })();
     /// <reference path="datetime.ts" />
     var Template = (function() {
         function Template() {}
@@ -801,97 +892,10 @@
                 formattedDate = selectedDateTime.dateObject.toLocaleString();
             }
             $input.val(formattedDate);
+            if ($.isFunction(storage.options.onChange)) {
+                storage.options.onChange.call($input.get(0), state.get("selectedDateTime").dateObject);
+            }
         });
     }
-    /// <reference path="datetime.ts" />
-    /// <reference path="template.ts" />
-    /// <reference path="uiBindings.ts" />
-    /// <reference path="eventBindings.ts" />
-    var methods = {
-        init: function(options) {
-            return this.each(function() {
-                var $input = $(this),
-                    initDateTime, storage = {
-                        options: options,
-                        $input: $input,
-                        $calendar: undefined,
-                        state: new State()
-                    };
-                var initialDate;
-                if ($.isFunction(options.beforeParseDateTime)) {
-                    initialDate = options.beforeParseDateTime.call($input.get(0), $input.val());
-                } else {
-                    initialDate = Date.parse($input.val());
-                }
-                if (initialDate instanceof Date) {
-                    initDateTime = new DateTime({
-                        year: initialDate.getFullYear(),
-                        month: initialDate.getMonth(),
-                        date: initialDate.getDate(),
-                        hour: initialDate.getHours(),
-                        minute: initialDate.getMinutes(),
-                        second: initialDate.getSeconds()
-                    });
-                } else {
-                    initDateTime = new DateTime();
-                }
-                options.useSecond || initDateTime.set("second", 0);
-                $input.data("datetimepicker", storage);
-                var calendarHtml = Template.renderCalendarDropdownHtml({
-                    year: initDateTime.year,
-                    month: initDateTime.month
-                }, initDateTime.year, initDateTime.decade, initDateTime, options.use12Hours, options.useSeconds, options.regional);
-                storage.$calendar = $(calendarHtml);
-                storage.$calendar.appendTo("body");
-                bindUi($input);
-                bindEvents($input);
-                storage.state.sets({
-                    "pickerView": PickerView.DatePicker,
-                    "timepickerView": TimepickerView.Dash,
-                    "datepickerView": DatepickerView.Days,
-                    "monthOfDaysView": {
-                        year: initDateTime.year,
-                        month: initDateTime.month
-                    },
-                    "yearOfMonthsView": initDateTime.year,
-                    "decadeOfYearsView": initDateTime.decade,
-                    "selectedDateTime": undefined,
-                    "isShown": false
-                });
-            });
-        },
-        getDate: function() {
-            var $input = this.eq(0);
-            var storage = $input.data("datetimepicker");
-            return storage.state.get("selectedDateTime");
-        }
-    };
-    $.fn.datetimepicker = function(options) {
-        var setting = {
-            use12Hours: true,
-            useSeconds: false,
-            beforeFormatDateTime: undefined,
-            beforeParseDateTime: undefined,
-            regional: {
-                monthNames: [
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"
-                ],
-                monthNamesShort: [
-                    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-                    "Sep", "Oct", "Nov", "Dec"
-                ],
-                dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                dayNamesMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-            }
-        };
-        if (methods[options]) {
-            return methods[options].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (typeof options === 'object' || !options) {
-            $.extend(setting, options);
-            return methods.init.call(this, setting);
-        }
-    };
 
 }(jQuery));
