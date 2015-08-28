@@ -9,6 +9,8 @@ function bindEvents($input) {
     var $calendar = storage.$calendar;
     var state: State = storage.state;
 
+    // calendar dropdown showing event, also binds a one-time event to
+    // close the dropdown
     $input.on("click.datetimepicker", () => {
         storage.state.set("isShown", true);
 
@@ -93,6 +95,7 @@ function bindEvents($input) {
         }
     });
 
+    // datepicker day selection
     storage.$calendar.on("click.datetimepicker", "table.days tbody td.old", () => {
         storage.$calendar.find(".datepicker .days .prev").trigger("click");
     });
@@ -114,6 +117,8 @@ function bindEvents($input) {
         );
 
         state.set("selectedDateTime", selectedDateTime);
+        
+        $("body").trigger("mousedown");
     });
 
     storage.$calendar.on("click.datetimepicker", "table.months tbody td span", function() {
@@ -206,6 +211,7 @@ function bindEvents($input) {
         }
     });
 
+    // timepicker hour selecting events
     storage.$calendar.on("click.datetimepicker", ".timepicker table.hours td", function() {
         var hour = +$(this).text(),
             selectedDateTime = DateTime.cloneFrom(state.get("selectedDateTime"));
@@ -214,6 +220,7 @@ function bindEvents($input) {
         state.set("timepickerView", TimepickerView.Dash);
     });
 
+    // timepicker minute selecting events
     storage.$calendar.on("click.datetimepicker", ".timepicker table.minutes td", function () {
         var minute = +$(this).text(),
             selectedDateTime = DateTime.cloneFrom(state.get("selectedDateTime"));
@@ -222,6 +229,7 @@ function bindEvents($input) {
         state.set("timepickerView", TimepickerView.Dash);
     });
 
+    // timepicker second selecting events
     storage.$calendar.on("click.datetimepicker", ".timepicker table.seconds td", function () {
         var second = +$(this).text(),
             selectedDateTime = DateTime.cloneFrom(state.get("selectedDateTime"));
@@ -230,7 +238,14 @@ function bindEvents($input) {
         state.set("timepickerView", TimepickerView.Dash);
     });
 
+    // Disable all the Keyboard Events
     $input.on("keypress.datetimepicker", (ev) => {
+        ev.preventDefault();
+    })
+    .on("keydown.datetimepicker", (ev) => {
+        ev.preventDefault();
+    })
+    .on("keyup.datetimepicker", (ev) => {
         ev.preventDefault();
     });
 
