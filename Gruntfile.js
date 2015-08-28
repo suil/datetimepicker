@@ -5,7 +5,13 @@ module.exports = function(grunt) {
         ts: {
             default: {
                 files: {
-                    "dist/datetimepicker.ts.js": ["src/js/datetime.ts", "src/js/state.ts", "src/js/template.ts", "src/js/uiBindings.ts", "src/js/eventBindings.ts", ]
+                    "dist/datetimepicker.ts.js": [
+                        "src/js/datetime.ts", 
+                        "src/js/state.ts", 
+                        "src/js/template.ts", 
+                        "src/js/uiBindings.ts", 
+                        "src/js/eventBindings.ts", 
+                        "src/js/plugin.ts"]
                 },
                 options: {
                     sourceMap: false,
