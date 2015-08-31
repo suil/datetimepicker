@@ -878,7 +878,7 @@
                     storage = $input.data("datetimepicker"),
                     datetime = new DateTime({
                         year: date.getFullYear(),
-                        month: date.getMonth(),
+                        month: date.getMonth() + 1,
                         date: date.getDate(),
                         hour: date.getHours(),
                         minute: date.getMinutes(),
