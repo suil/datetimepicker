@@ -6,16 +6,21 @@ interface IMonth {
 class DateTime {
     private datetime: Date;
 
-    constructor(value?: { year?: number; month?: number; date?: number; hour?: number; minute?: number; second?: number }) {
+    constructor(value?) {
         var now = new Date();
         if (!value) {
             this.datetime = now;
             return;
         }
+        
+        if (value instanceof Date) {
+            this.datetime = new Date(value.getTime());
+        }
+        
         this.datetime = new Date(
             value.year ? value.year : now.getFullYear() ,
             value.month ? value.month - 1 : now.getMonth(),
-            value.date ? value.date : now.getDate(),
+            value.date ? value.date : value.month ? 1 : now.getDate(),
             value.hour ? value.hour : now.getHours(),
             value.minute ? value.minute : now.getMinutes(),
             value.second ? value.second : now.getSeconds()
