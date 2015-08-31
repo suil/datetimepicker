@@ -72,13 +72,22 @@ var methods = {
     getDate: function() {
         var $input = this.eq(0);
         var storage = $input.data("datetimepicker");
-        return storage.state.get("selectedDateTime");
+        var selectedDatetime = storage.state.get("selectedDateTime");
+        return selectedDatetime ? selectedDatetime.dateObject : undefined;
     },
 
-    setDate: function(datetime: Date) {
+    setDate: function(date: Date) {
         return this.each(function() {
             var $input = $(this),
-                storage = $input.data("datetimepicker");
+                storage = $input.data("datetimepicker"),
+                datetime = new DateTime({
+                    year: date.getFullYear() ,
+                    month: date.getMonth(),
+                    date: date.getDate(),
+                    hour: date.getHours(),
+                    minute: date.getMinutes(),
+                    second : date.getSeconds()
+                })
             storage.state.set("selectedDateTime", datetime);
         });
     }

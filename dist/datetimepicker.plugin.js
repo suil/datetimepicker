@@ -651,22 +651,18 @@
         $calendar.on("click.datetimepicker", ".days .prev", function() {
             var prevMonth = new DateTime({
                 year: state.get("monthOfDaysView").year,
-                month: state.get("monthOfDaysView").month - 1
+                month: state.get("monthOfDaysView").month - 1,
+                date: 1
             });
-            state.set("monthOfDaysView", {
-                year: prevMonth.year,
-                month: prevMonth.month
-            });
+            state.set("monthOfDaysView", prevMonth.monthObject);
         });
         $calendar.on("click.datetimepicker", ".days .next", function() {
             var nextMonth = new DateTime({
                 year: state.get("monthOfDaysView").year,
-                month: state.get("monthOfDaysView").month + 1
+                month: state.get("monthOfDaysView").month + 1,
+                date: 1
             });
-            state.set("monthOfDaysView", {
-                year: nextMonth.year,
-                month: nextMonth.month
-            });
+            state.set("monthOfDaysView", nextMonth.monthObject);
         });
         $calendar.on("click.datetimepicker", ".months .prev", function() {
             var prevYear = state.get("yearOfMonthsView") - 1;
@@ -873,12 +869,21 @@
         getDate: function() {
             var $input = this.eq(0);
             var storage = $input.data("datetimepicker");
-            return storage.state.get("selectedDateTime");
+            var selectedDatetime = storage.state.get("selectedDateTime");
+            return selectedDatetime ? selectedDatetime.dateObject : undefined;
         },
-        setDate: function(datetime) {
+        setDate: function(date) {
             return this.each(function() {
                 var $input = $(this),
-                    storage = $input.data("datetimepicker");
+                    storage = $input.data("datetimepicker"),
+                    datetime = new DateTime({
+                        year: date.getFullYear(),
+                        month: date.getMonth(),
+                        date: date.getDate(),
+                        hour: date.getHours(),
+                        minute: date.getMinutes(),
+                        second: date.getSeconds()
+                    });
                 storage.state.set("selectedDateTime", datetime);
             });
         }

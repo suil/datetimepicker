@@ -27,25 +27,21 @@ function bindEvents($input) {
     $calendar.on("click.datetimepicker", ".days .prev", () => {
         var prevMonth = new DateTime({
             year: state.get("monthOfDaysView").year,
-            month: state.get("monthOfDaysView").month - 1
+            month: state.get("monthOfDaysView").month - 1,
+            date: 1
         });
 
-        state.set(
-            "monthOfDaysView",
-            { year: prevMonth.year, month: prevMonth.month }
-        );
+        state.set("monthOfDaysView", prevMonth.monthObject);
     });
 
     $calendar.on("click.datetimepicker", ".days .next", () => {
         var nextMonth = new DateTime({
             year: state.get("monthOfDaysView").year,
-            month: state.get("monthOfDaysView").month + 1
+            month: state.get("monthOfDaysView").month + 1,
+            date: 1
         });
 
-        state.set(
-            "monthOfDaysView",
-            { year: nextMonth.year, month: nextMonth.month }
-        );
+        state.set("monthOfDaysView", nextMonth.monthObject);
     });
 
     // months view
