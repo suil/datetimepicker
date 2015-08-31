@@ -15,6 +15,7 @@ class DateTime {
         
         if (value instanceof Date) {
             this.datetime = new Date(value.getTime());
+            return;
         }
         
         this.datetime = new Date(
