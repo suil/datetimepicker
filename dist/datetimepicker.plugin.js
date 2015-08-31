@@ -879,7 +879,7 @@
             return this.each(function() {
                 var $input = $(this),
                     storage = $input.data("datetimepicker");
-                storage.state.set("selectedDateTime");
+                storage.state.set("selectedDateTime", datetime);
             });
         }
     };
