@@ -11,7 +11,8 @@ module.exports = function(grunt) {
                         "src/js/template.ts", 
                         "src/js/uiBindings.ts", 
                         "src/js/eventBindings.ts", 
-                        "src/js/plugin.ts"]
+                        "src/js/plugin.ts"
+                    ]
                 },
                 options: {
                     sourceMap: false,
@@ -23,14 +24,12 @@ module.exports = function(grunt) {
             }
         },
 
-        concat: {
-            "jquery-wrapping": {
+        wrap: {
+            jqueryplugin: {
                 src: ['dist/datetimepicker.ts.js'],
                 dest: 'dist/datetimepicker.plugin.js',
                 options: {
-                    banner: ";(function($) { \n'use strict';\n;",
-                    footer: "\n}(jQuery));",
-                    separator: ""
+                    wrapper: [";(function ($) {\n'use strict';", "\n}(jQuery));"]
                 }
             }
         },
@@ -81,12 +80,12 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks("grunt-ts");
-    grunt.loadNpmTasks("grunt-contrib-concat");
+    grunt.loadNpmTasks("grunt-wrap");
 //    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks("grunt-jsbeautifier");
     grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-clean");
 
-    grunt.registerTask("default", ["ts", "concat:jquery-wrapping", "jsbeautifier", "less:development", "clean"]);
+    grunt.registerTask("default", ["ts", "wrap:jqueryplugin", "jsbeautifier", "less:development", "clean"]);
 
 }

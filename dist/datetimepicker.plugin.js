@@ -1,6 +1,6 @@
 ;
 (function($) {
-    'use strict';;
+    'use strict';
     var DateTime = (function() {
         function DateTime(value) {
             var now = new Date();
@@ -874,6 +874,13 @@
             var $input = this.eq(0);
             var storage = $input.data("datetimepicker");
             return storage.state.get("selectedDateTime");
+        },
+        setDate: function(datetime) {
+            return this.each(function() {
+                var $input = $(this),
+                    storage = $input.data("datetimepicker");
+                storage.state.set("selectedDateTime");
+            });
         }
     };
     $.fn.datetimepicker = function(options) {
@@ -904,5 +911,6 @@
             return methods.init.call(this, setting);
         }
     };
+
 
 }(jQuery));

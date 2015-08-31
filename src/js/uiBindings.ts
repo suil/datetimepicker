@@ -1,5 +1,6 @@
 /// <reference path="state.ts" />
 /// <reference path="template.ts" />
+
 declare var $;
 
 function bindUi($input) {

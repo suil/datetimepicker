@@ -3,8 +3,6 @@
 /// <reference path="uiBindings.ts" />
 /// <reference path="eventBindings.ts" />
 
-declare var $;
-
 var methods = {
 
     init: function (options) {
@@ -75,8 +73,15 @@ var methods = {
         var $input = this.eq(0);
         var storage = $input.data("datetimepicker");
         return storage.state.get("selectedDateTime");
-    }
+    },
 
+    setDate: function(datetime: Date) {
+        return this.each(function() {
+            var $input = $(this),
+                storage = $input.data("datetimepicker");
+            storage.state.set("selectedDateTime");
+        });
+    }
 }
 
 $.fn.datetimepicker = function (options) {
