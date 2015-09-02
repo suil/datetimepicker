@@ -8,7 +8,11 @@
                 this.datetime = now;
                 return;
             }
-            this.datetime = new Date(value.year ? value.year : now.getFullYear(), value.month ? value.month - 1 : now.getMonth(), value.date ? value.date : now.getDate(), value.hour ? value.hour : now.getHours(), value.minute ? value.minute : now.getMinutes(), value.second ? value.second : now.getSeconds());
+            if (value instanceof Date) {
+                this.datetime = new Date(value.getTime());
+                return;
+            }
+            this.datetime = new Date(value.year ? value.year : now.getFullYear(), value.month ? value.month - 1 : now.getMonth(), value.date ? value.date : value.month ? 1 : now.getDate(), value.hour ? value.hour : now.getHours(), value.minute ? value.minute : now.getMinutes(), value.second ? value.second : now.getSeconds());
         }
         Object.defineProperty(DateTime.prototype, "decade", {
             get: function() {
@@ -876,14 +880,7 @@
             return this.each(function() {
                 var $input = $(this),
                     storage = $input.data("datetimepicker"),
-                    datetime = new DateTime({
-                        year: date.getFullYear(),
-                        month: date.getMonth() + 1,
-                        date: date.getDate(),
-                        hour: date.getHours(),
-                        minute: date.getMinutes(),
-                        second: date.getSeconds()
-                    });
+                    datetime = new DateTime(date);
                 storage.state.set("selectedDateTime", datetime);
             });
         }
