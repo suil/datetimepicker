@@ -254,7 +254,20 @@ function bindEvents($input) {
 
     // Disable all the Keyboard Events
     $input.on("keypress.datetimepicker keydown.datetimepicker keyup.datetimepicker", (ev) => {
-        ev.preventDefault();
+        var allowedKeyCodes = [
+            keyCode.DOWN,
+            keyCode.END,
+            keyCode.ENTER,
+            keyCode.ESCAPE,
+            keyCode.LEFT,
+            keyCode.RIGHT,
+            keyCode.UP,
+            keyCode.DOWN,
+            keyCode.TAB
+        ];
+        if ($.inArray(ev.which, allowedKeyCodes) == -1) {
+            ev.preventDefault();
+        }
     });
 
 }
