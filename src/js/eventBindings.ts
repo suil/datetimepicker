@@ -253,13 +253,7 @@ function bindEvents($input) {
     });
 
     // Disable all the Keyboard Events
-    $input.on("keypress.datetimepicker", (ev) => {
-        ev.preventDefault();
-    })
-    .on("keydown.datetimepicker", (ev) => {
-        ev.preventDefault();
-    })
-    .on("keyup.datetimepicker", (ev) => {
+    $input.on("keypress.datetimepicker keydown.datetimepicker keyup.datetimepicker", (ev) => {
         ev.preventDefault();
     });
 

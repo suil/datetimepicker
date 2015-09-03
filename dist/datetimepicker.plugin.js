@@ -643,6 +643,24 @@
         var storage = $input.data("datetimepicker");
         var $calendar = storage.$calendar;
         var state = storage.state;
+        var keyCode = {
+            BACKSPACE: 8,
+            COMMA: 188,
+            DELETE: 46,
+            DOWN: 40,
+            END: 35,
+            ENTER: 13,
+            ESCAPE: 27,
+            HOME: 36,
+            LEFT: 37,
+            PAGE_DOWN: 34,
+            PAGE_UP: 33,
+            PERIOD: 190,
+            RIGHT: 39,
+            SPACE: 32,
+            TAB: 9,
+            UP: 38
+        };
         $input.on("click.datetimepicker", function() {
             storage.state.set("isShown", true);
             var $body = $("body").on("mousedown.datetimepicker", function(ev) {
@@ -803,15 +821,9 @@
             state.set("selectedDateTime", selectedDateTime.set("second", second));
             state.set("timepickerView", TimepickerView.Dash);
         });
-        $input.on("keypress.datetimepicker", function(ev) {
-                ev.preventDefault();
-            })
-            .on("keydown.datetimepicker", function(ev) {
-                ev.preventDefault();
-            })
-            .on("keyup.datetimepicker", function(ev) {
-                ev.preventDefault();
-            });
+        $input.on("keypress.datetimepicker keydown.datetimepicker keyup.datetimepicker", function(ev) {
+            ev.preventDefault();
+        });
     }
     /// <reference path="datetime.ts" />
     /// <reference path="template.ts" />
