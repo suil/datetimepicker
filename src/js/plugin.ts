@@ -47,6 +47,7 @@ var methods = {
                 initDateTime,
                 options.use12Hours,
                 options.useSeconds,
+                options.useTime,
                 options.regional
             );
             storage.$calendar = $(calendarHtml);
@@ -90,6 +91,7 @@ $.fn.datetimepicker = function (options) {
     var setting = {
         use12Hours: true,
         useSeconds: false,
+        useTime: true,
         regional: {
             monthNames: [
                 "January", "February", "March", "April", "May", "June",

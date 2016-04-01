@@ -8,14 +8,14 @@ class Template {
     <tr>\
         <th class="prev"><span>‹</span></th>\
         <th colspan="5" class="title">\
-            <%= reginal.monthNames[monthOfDaysView.month-1] %>\
+            <%= regional.monthNames[monthOfDaysView.month-1] %>\
             <%= monthOfDaysView.year %>\
         </th>\
         <th class="next"><span>›</span></th>\
     </tr>\
     <tr>\
-        <% for (var i=0; i < reginal.dayNamesMin.length; i++) { %>\
-            <th><%= reginal.dayNamesMin[i] %></th>\
+        <% for (var i=0; i < regional.dayNamesMin.length; i++) { %>\
+            <th><%= regional.dayNamesMin[i] %></th>\
         <% } %>\
     </tr>\
 </thead>\
@@ -47,9 +47,9 @@ class Template {
 <tbody>\
     <tr>\
         <td colspan="7">\
-            <% for (var i=0; i < reginal.monthNamesShort.length; i++) { %>\
+            <% for (var i=0; i < regional.monthNamesShort.length; i++) { %>\
                 <span <% if (yearOfMonthsView == selectedYear && i == selectedMonth - 1) {%> class="active" <%} %>>\
-                    <%= reginal.monthNamesShort[i] %>\
+                    <%= regional.monthNamesShort[i] %>\
                 </span>\
             <% } %>\
         </td>\
@@ -96,9 +96,11 @@ class Template {
             <%= yearsViewTemplate %>\
         </div>\
     </li>\
-    <li class="switch">\
-        <a class="btn"><i class="wait icon"></i></a>\
-    </li>\
+    <% if (useTime) { %>\
+        <li class="switch">\
+            <a class="btn"><i class="wait icon"></i></a>\
+        </li>\
+    <% } %>\
     <li class="collapsed">\
         <div class="timepicker">\
             <table class="dash">\
@@ -228,7 +230,7 @@ class Template {
         return this.html2TemplateFn(this.daysViewTemplateHtml)({
             monthOfDaysView: monthOfDaysView,
             datesInDaysView: dates,
-            reginal: regional
+            regional: regional
         });
     }
 
@@ -239,7 +241,7 @@ class Template {
             yearOfMonthsView: yearOfMonthsView,
             selectedYear: selectedDateTime.year,
             selectedMonth: selectedDateTime.month,
-            reginal: regional
+            regional: regional
         });
     }
 
@@ -249,12 +251,19 @@ class Template {
         return this.html2TemplateFn(this.yearsViewTemplateHtml)({
             decadeOfYearsView: decadeOfYearsView,
             selectedYear: selectedDateTime.year,
-            reginal: regional
+            regional: regional
         });
     }
 
-    static renderCalendarDropdownHtml(monthOfDaysView: IMonth, yearOfMonthsView: number, decadeOfYearsView: number,
-        selectedDateTime: DateTime, use12Hours: boolean, useSeconds: boolean, regional: {}): string
+    static renderCalendarDropdownHtml(
+        monthOfDaysView: IMonth,
+        yearOfMonthsView: number,
+        decadeOfYearsView: number,
+        selectedDateTime: DateTime,
+        use12Hours: boolean,
+        useSeconds: boolean,
+        useTime: boolean,
+        regional: {}): string
     {
         if (!selectedDateTime) { selectedDateTime = new DateTime(); }
 
@@ -266,9 +275,10 @@ class Template {
             selectedMinute: selectedDateTime.minute,
             selectedSecond: selectedDateTime.second,
             selectedAmPm: selectedDateTime.ampm.toUpperCase(),
-            use12Hours: use12Hours,
-            useSeconds: useSeconds,
-            reginal: regional
+            use12Hours,
+            useSeconds,
+            useTime,
+            regional
         });
     }
 }
