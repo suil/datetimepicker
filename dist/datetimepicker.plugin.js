@@ -613,7 +613,13 @@
             if (!selectedDateTime) {
                 return;
             }
-            if (!storage.options.useSeconds) {
+            if (storage.options.useTime) {
+                if (!storage.options.useSeconds) {
+                    selectedDateTime.set("second", 0);
+                }
+            } else {
+                selectedDateTime.set("hour", 0);
+                selectedDateTime.set("minute", 0);
                 selectedDateTime.set("second", 0);
             }
             $datepicker.find("table.days tbody tr td.active").removeClass("active");
