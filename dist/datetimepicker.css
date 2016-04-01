@@ -170,7 +170,7 @@
 .dtp-widget ul.accordion li table td span.active {
   color: #fff;
   background-color: #04c;
-  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  background-image: linear-gradient(to bottom, #08c, #04c);
   background-repeat: repeat-x;
 }
 .dtp-widget ul.accordion li table.dash .separator {

@@ -300,7 +300,7 @@
             return this.html2TemplateFn(this.daysViewTemplateHtml)({
                 monthOfDaysView: monthOfDaysView,
                 datesInDaysView: dates,
-                reginal: regional
+                regional: regional
             });
         };
         Template.renderMonthsViewHtml = function(yearOfMonthsView, selectedDateTime, regional) {
@@ -311,7 +311,7 @@
                 yearOfMonthsView: yearOfMonthsView,
                 selectedYear: selectedDateTime.year,
                 selectedMonth: selectedDateTime.month,
-                reginal: regional
+                regional: regional
             });
         };
         Template.renderYearsViewHtml = function(decadeOfYearsView, selectedDateTime, regional) {
@@ -321,10 +321,10 @@
             return this.html2TemplateFn(this.yearsViewTemplateHtml)({
                 decadeOfYearsView: decadeOfYearsView,
                 selectedYear: selectedDateTime.year,
-                reginal: regional
+                regional: regional
             });
         };
-        Template.renderCalendarDropdownHtml = function(monthOfDaysView, yearOfMonthsView, decadeOfYearsView, selectedDateTime, use12Hours, useSeconds, regional) {
+        Template.renderCalendarDropdownHtml = function(monthOfDaysView, yearOfMonthsView, decadeOfYearsView, selectedDateTime, use12Hours, useSeconds, useTime, regional) {
             if (!selectedDateTime) {
                 selectedDateTime = new DateTime();
             }
@@ -338,7 +338,8 @@
                 selectedAmPm: selectedDateTime.ampm.toUpperCase(),
                 use12Hours: use12Hours,
                 useSeconds: useSeconds,
-                reginal: regional
+                useTime: useTime,
+                regional: regional
             });
         };
         Template.daysViewTemplateHtml = '\
@@ -347,14 +348,14 @@
     <tr>\
         <th class="prev"><span>‹</span></th>\
         <th colspan="5" class="title">\
-            <%= reginal.monthNames[monthOfDaysView.month-1] %>\
+            <%= regional.monthNames[monthOfDaysView.month-1] %>\
             <%= monthOfDaysView.year %>\
         </th>\
         <th class="next"><span>›</span></th>\
     </tr>\
     <tr>\
-        <% for (var i=0; i < reginal.dayNamesMin.length; i++) { %>\
-            <th><%= reginal.dayNamesMin[i] %></th>\
+        <% for (var i=0; i < regional.dayNamesMin.length; i++) { %>\
+            <th><%= regional.dayNamesMin[i] %></th>\
         <% } %>\
     </tr>\
 </thead>\
@@ -385,9 +386,9 @@
 <tbody>\
     <tr>\
         <td colspan="7">\
-            <% for (var i=0; i < reginal.monthNamesShort.length; i++) { %>\
+            <% for (var i=0; i < regional.monthNamesShort.length; i++) { %>\
                 <span <% if (yearOfMonthsView == selectedYear && i == selectedMonth - 1) {%> class="active" <%} %>>\
-                    <%= reginal.monthNamesShort[i] %>\
+                    <%= regional.monthNamesShort[i] %>\
                 </span>\
             <% } %>\
         </td>\
@@ -432,9 +433,11 @@
             <%= yearsViewTemplate %>\
         </div>\
     </li>\
-    <li class="switch">\
-        <a class="btn"><i class="wait icon"></i></a>\
-    </li>\
+    <% if (useTime) { %>\
+        <li class="switch">\
+            <a class="btn"><i class="wait icon"></i></a>\
+        </li>\
+    <% } %>\
     <li class="collapsed">\
         <div class="timepicker">\
             <table class="dash">\
@@ -875,7 +878,7 @@
                 var calendarHtml = Template.renderCalendarDropdownHtml({
                     year: initDateTime.year,
                     month: initDateTime.month
-                }, initDateTime.year, initDateTime.decade, initDateTime, options.use12Hours, options.useSeconds, options.regional);
+                }, initDateTime.year, initDateTime.decade, initDateTime, options.use12Hours, options.useSeconds, options.useTime, options.regional);
                 storage.$calendar = $(calendarHtml);
                 storage.$calendar.appendTo("body");
                 bindUi($input);
@@ -914,6 +917,7 @@
         var setting = {
             use12Hours: true,
             useSeconds: false,
+            useTime: true,
             regional: {
                 monthNames: [
                     "January", "February", "March", "April", "May", "June",
