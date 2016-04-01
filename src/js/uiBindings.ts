@@ -128,8 +128,15 @@ function bindUi($input) {
     state.onChange("selectedDateTime", (selectedDateTime: DateTime) => {
         if (!selectedDateTime) { return; }
 
-        //set second to 0 if useSeconds is false
-        if (!storage.options.useSeconds) { selectedDateTime.set("second", 0); }
+        if (storage.options.useTime) {
+            //set second to 0 if useSeconds is false
+            if (!storage.options.useSeconds) { selectedDateTime.set("second", 0); }
+        }
+        else {
+            selectedDateTime.set("hour", 0);
+            selectedDateTime.set("minute", 0);
+            selectedDateTime.set("second", 0);
+        }
 
         // change datepicker view
         $datepicker.find("table.days tbody tr td.active").removeClass("active");
